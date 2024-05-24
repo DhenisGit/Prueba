@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f62ad093bcfdf324789a6f4fc9caff1e, type: 3}
+  m_Name: Automatic
+  m_EditorClassIdentifier: 
+  ItemName: AutomaticHeating
+  ItemImage: {fileID: 21300000, guid: 446726c989e01d149a38c6627d8d10e7, type: 3}
+  ItemDescription: "Sistema de calefacci\xF3n autom\xE1tico con intercambiador de
+    calor de placa"
+  Item3DModel: {fileID: 7203557047771685131, guid: b9557105c58b29443b075e118c7c721a, type: 3}
