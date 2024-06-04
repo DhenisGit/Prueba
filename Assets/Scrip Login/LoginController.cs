@@ -46,7 +46,7 @@ public class LoginController : MonoBehaviour
         StartCoroutine(LoginCoroutine());
     }
 
-    IEnumerator LoginCoroutine()
+    private IEnumerator LoginCoroutine()
     {
         WWWForm form = new WWWForm();
         form.AddField("codigo", loginEmail.text);
@@ -59,7 +59,7 @@ public class LoginController : MonoBehaviour
             Debug.Log("Code Response: " + www.responseCode);
             if (www.responseCode == 200)
             {
-                ApiResponse response = JsonUtility.FromJson<ApiResponse>(www.downloadHandler.text);
+                AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
                 if (!string.IsNullOrEmpty(response.error))
                 {
                     Debug.LogError("Server Error: " + response.error);
@@ -70,7 +70,6 @@ public class LoginController : MonoBehaviour
                     authToken = response.token; // Almacenar el token
                     Debug.Log("Token: " + response.token);
                     OpenHomePanel();
-                    // Ahora podemos llamar a la API para obtener las máquinas después de iniciar sesión exitosamente
                     FindObjectOfType<DataManager>().LoadItemsFromAPI();
                 }
             }
@@ -116,22 +115,17 @@ public class LoginController : MonoBehaviour
         StartCoroutine(ShowErrorMessageCoroutine(message, 3.0f)); // Inicia la coroutine con un retraso de 3 segundos
     }
 
-    IEnumerator ShowErrorMessageCoroutine(string message, float delay)
+    private IEnumerator ShowErrorMessageCoroutine(string message, float delay)
     {
         errorMessage.text = message;
         errorPanel.SetActive(true);
         yield return new WaitForSeconds(delay); // Espera 3 segundos
         errorPanel.SetActive(false); // Oculta el panel de error
     }
+
     public void SetLoginCredentials()
     {
         loginEmail.text = "DaKMfVSYhG";
         loginPassword.text = "35855067";
-    }
-    [System.Serializable]
-    public class ApiResponse
-    {
-        public string token;
-        public string error;
     }
 }

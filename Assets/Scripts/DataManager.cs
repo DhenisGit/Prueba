@@ -6,16 +6,22 @@ using UnityEngine.UI;
 
 public class DataManager : MonoBehaviour
 {
-    [SerializeField] private ARObjLoader arObjLoader;
+    [SerializeField] private string apiUrl = "https://back.igvperu.com/public/api/cliente/maquinas/get";
     [SerializeField] private GameObject buttonContainer; // Contenedor donde se agregarán los botones
     [SerializeField] private ItemButtonManager itemButtonPrefab; // Prefab del botón
+
+    // Elimina la llamada en el Start
+    // void Start()
+    // {
+    //     LoadItemsFromAPI();
+    // }
 
     public void LoadItemsFromAPI()
     {
         if (!string.IsNullOrEmpty(LoginController.authToken))
         {
             Debug.Log("Loading items from API.");
-            StartCoroutine(arObjLoader.GetObjListFromAPI());
+            StartCoroutine(GetItemsFromAPI());
         }
         else
         {
@@ -23,7 +29,27 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void CreateButtons(List<DataItem> dataItems)
+    private IEnumerator GetItemsFromAPI()
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get(apiUrl))
+        {
+            www.SetRequestHeader("Authorization", "Bearer " + LoginController.authToken);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Failed to fetch data: " + www.error);
+            }
+            else
+            {
+                Debug.Log("API Response: " + www.downloadHandler.text);
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(www.downloadHandler.text);
+                CreateButtons(response.data);
+            }
+        }
+    }
+
+    private void CreateButtons(List<DataItem> dataItems)
     {
         Debug.Log($"Creating buttons for {dataItems.Count} items.");
 
@@ -37,37 +63,35 @@ public class DataManager : MonoBehaviour
         {
             Debug.Log($"Creating button for item: {item.maquina.nombre}");
 
+            // Instanciar el prefab del botón
             ItemButtonManager itemButton = Instantiate(itemButtonPrefab, buttonContainer.transform);
             itemButton.ItemName = item.maquina.nombre;
-            itemButton.ItemImage = null; // Aquí puedes asignar una imagen predeterminada si es necesario
 
-            // Verifica que el modelo exista antes de asignarlo
-            GameObject model = arObjLoader.transform.Find(item.maquina.nombre)?.gameObject;
-            if (model != null)
-            {
-                itemButton.Item3DModel = model;
-            }
-            else
-            {
-                Debug.LogError($"Model for {item.maquina.nombre} not found.");
-            }
+            // Descargar y asignar la imagen
+            StartCoroutine(DownloadImage(item.maquina.url_imagen, itemButton));
 
             itemButton.name = item.maquina.nombre;
 
-            // Configura el botón para mostrar el modelo 3D
-            itemButton.GetComponent<Button>().onClick.AddListener(() => {
-                if (itemButton.Item3DModel != null)
-                {
-                    itemButton.Item3DModel.SetActive(true);
-                    // Añade lógica para mostrar el modelo en la cámara AR
-                }
-                else
-                {
-                    Debug.LogError($"Model for {item.maquina.nombre} is null.");
-                }
-            });
+            Debug.Log($"Button created for item: {item.maquina.nombre}");
+        }
+    }
 
-            // Puedes añadir más configuraciones aquí si es necesario
+    private IEnumerator DownloadImage(string url, ItemButtonManager itemButton)
+    {
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Failed to download image: " + www.error);
+            }
+            else
+            {
+                Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                itemButton.ItemImage = sprite;
+            }
         }
     }
 }
