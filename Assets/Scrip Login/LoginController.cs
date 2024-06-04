@@ -10,6 +10,8 @@ public class LoginController : MonoBehaviour
     public Text errorMessage;
     public Button buttonHidePass, buttonShowPass;
 
+    public static string authToken; // Variable estática para almacenar el token
+
     void Start()
     {
         OpenLoginPanel();
@@ -47,56 +49,49 @@ public class LoginController : MonoBehaviour
     IEnumerator LoginCoroutine()
     {
         WWWForm form = new WWWForm();
-        form.AddField("email", loginEmail.text);
+        form.AddField("codigo", loginEmail.text);
         form.AddField("password", loginPassword.text);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("https://back.igvperu.com/public/api/login", form))
+        using (UnityWebRequest www = UnityWebRequest.Post("https://back.igvperu.com/public/api/login/1", form))
         {
             yield return www.SendWebRequest();
 
-            //if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
-            //{
-            //    Debug.LogError("Network Error: " + www.error);
-            //    ShowErrorMessage("Error de conexión o de protocolo: " + www.error);
-            //}
-            //else
-            //{
-                Debug.LogError("Code Response: " + www.responseCode);
-                if (www.responseCode == 200 || www.responseCode == 201)
+            Debug.Log("Code Response: " + www.responseCode);
+            if (www.responseCode == 200)
+            {
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(www.downloadHandler.text);
+                if (!string.IsNullOrEmpty(response.error))
                 {
-                    ApiResponse response = JsonUtility.FromJson<ApiResponse>(www.downloadHandler.text);
-                    if (!string.IsNullOrEmpty(response.error))
-                    {
-                        Debug.LogError("Server Error: " + response.error);
-                        ShowErrorMessage(response.error);
-                    }
-                    else
-                    {
-                        Debug.Log("Token: " + response.token);
-                        OpenHomePanel();
-                    }
-                }
-                else if (www.responseCode == 400)
-                {
-                    Debug.LogError("Bad Request: " + www.downloadHandler.text);
-                    ShowErrorMessage("Solicitud incorrecta. Por favor, revisa tus datos.");
-                }
-                else if (www.responseCode == 401)
-                {
-                    Debug.LogError("Unauthorized: " + www.downloadHandler.text);
-                    ShowErrorMessage("Credenciales incorrectas");
-                }
-                else if (www.responseCode == 404)
-                {
-                    Debug.LogError("Not Found: " + www.downloadHandler.text);
-                    ShowErrorMessage("Servicio no encontrado.");
+                    Debug.LogError("Server Error: " + response.error);
+                    ShowErrorMessage(response.error);
                 }
                 else
                 {
-                    Debug.LogError("Unexpected Error (" + www.responseCode + "): " + www.downloadHandler.text);
-                    ShowErrorMessage("Error inesperado. Código: " + www.responseCode);
+                    authToken = response.token; // Almacenar el token
+                    Debug.Log("Token: " + response.token);
+                    OpenHomePanel();
+                    // Ahora podemos llamar a la API para obtener las máquinas después de iniciar sesión exitosamente
+                    FindObjectOfType<DataManager>().LoadItemsFromAPI();
                 }
-            //}
+            }
+            else if (www.responseCode == 400)
+            {
+                Debug.LogError("Bad Request: " + www.downloadHandler.text);
+                ShowErrorMessage("Solicitud incorrecta. Por favor, revisa tus datos.");
+            }
+            else if (www.responseCode == 401)
+            {
+                ShowErrorMessage("Credenciales incorrectas");
+            }
+            else if (www.responseCode == 404)
+            {
+                ShowErrorMessage("No se encontró un usuario con el código ingresado");
+            }
+            else
+            {
+                Debug.LogError("Unexpected Error (" + www.responseCode + "): " + www.downloadHandler.text);
+                ShowErrorMessage("Error inesperado. Código: " + www.responseCode);
+            }
         }
     }
 
@@ -128,7 +123,11 @@ public class LoginController : MonoBehaviour
         yield return new WaitForSeconds(delay); // Espera 3 segundos
         errorPanel.SetActive(false); // Oculta el panel de error
     }
-
+    public void SetLoginCredentials()
+    {
+        loginEmail.text = "DaKMfVSYhG";
+        loginPassword.text = "35855067";
+    }
     [System.Serializable]
     public class ApiResponse
     {

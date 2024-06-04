@@ -5,42 +5,74 @@ using UnityEngine.UI;
 
 public class ItemButtonManager : MonoBehaviour
 {
-	private string itemName;
-	private string itemDescription;
-	private Sprite itemImage;
-	private GameObject item3DModel;
-	private ARInteractionsManager interactionsManager;
+    [SerializeField] private Text itemNameText;
+    [SerializeField] private Image itemImage;
+    [SerializeField] private GameObject item3DModel;
+    [SerializeField] private ModelToSprite modelToSprite;
 
+    private ARInteractionsManager interactionsManager;
 
-	public string ItemName
-	{
-		set
-		{
-			itemName = value;
-		}
-	}
+    public string ItemName
+    {
+        set
+        {
+            if (itemNameText != null)
+            {
+                itemNameText.text = value;
+            }
+            else
+            {
+                Debug.LogError("itemNameText is not assigned.");
+            }
+        }
+    }
 
-	public string ItemDesciption { set => itemDescription = value; }
+    public Sprite ItemImage
+    {
+        set
+        {
+            if (itemImage != null)
+            {
+                itemImage.sprite = value;
+            }
+            else
+            {
+                Debug.LogError("itemImage is not assigned.");
+            }
+        }
+    }
 
-	public Sprite ItemImage { set => itemImage = value; }
-	public GameObject Item3DModel { set => item3DModel = value; }
+    public GameObject Item3DModel
+    {
+        get
+        {
+            return item3DModel;
+        }
+        set
+        {
+            item3DModel = value;
+        }
+    }
 
-	void Start()
-	{
-		transform.GetChild(0).GetComponent<Text>().text = itemName;
-		transform.GetChild(1).GetComponent<RawImage>().texture = itemImage.texture;
-		transform.GetChild(2).GetComponent<Text>().text = itemDescription;
+    void Start()
+    {
+        var button = GetComponent<Button>();
+        button.onClick.AddListener(() => GameManager.instance.ARPosition());
+        button.onClick.AddListener(Create3DModel);
+        interactionsManager = FindObjectOfType<ARInteractionsManager>();
+    }
 
-		var button = GetComponent<Button>();
-		button.onClick.AddListener(GameManager.instance.ARPosition);
-		button.onClick.AddListener(Create3DModel);
-
-		interactionsManager = FindObjectOfType<ARInteractionsManager>();
-	}
-
-	private void Create3DModel()
-	{
-		interactionsManager.Item3DModel = Instantiate(item3DModel);
-	}
-
+    private void Create3DModel()
+    {
+        if (item3DModel != null)
+        {
+            var instantiatedModel = Instantiate(item3DModel);
+            interactionsManager.Item3DModel = instantiatedModel;
+            modelToSprite.RenderModelToSprite(instantiatedModel);
+        }
+        else
+        {
+            Debug.LogError("Item 3D model is null.");
+        }
+    }
 }

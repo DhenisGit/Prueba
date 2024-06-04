@@ -23,23 +23,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        MainMenu();
-
-    }
     public void MainMenu()
     {
         OnMainMenu?.Invoke();
         Debug.Log("Main Menu Activated");
     }
+
     public void ItemsMenu()
     {
         OnItemsMenu?.Invoke();
         Debug.Log("Items Menu Activated");
-
     }
 
     public void ARPosition()
@@ -50,9 +43,11 @@ public class GameManager : MonoBehaviour
 
     public void CloseApp()
     {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
+        Debug.Log("CloseApp called.");
     }
-
-
 }
-
