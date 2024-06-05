@@ -70,7 +70,6 @@ public class LoginController : MonoBehaviour
                     authToken = response.token; // Almacenar el token
                     Debug.Log("Token: " + response.token);
                     OpenHomePanel();
-                    FindObjectOfType<DataManager>().LoadItemsFromAPI();
                 }
             }
             else if (www.responseCode == 400)
@@ -125,7 +124,14 @@ public class LoginController : MonoBehaviour
 
     public void SetLoginCredentials()
     {
-        loginEmail.text = "DaKMfVSYhG";
-        loginPassword.text = "35855067";
+        loginEmail.text = "EmVcaOSlxX";
+        loginPassword.text = "48836529";
     }
+}
+
+[System.Serializable]
+public class AuthResponse
+{
+    public string token;
+    public string error;
 }

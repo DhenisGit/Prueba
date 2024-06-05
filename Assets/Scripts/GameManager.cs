@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     {
         OnItemsMenu?.Invoke();
         Debug.Log("Items Menu Activated");
+
+        // Llamar a la API para cargar items
+        FindObjectOfType<DataManager>().LoadItemsFromAPI();
     }
 
     public void ARPosition()

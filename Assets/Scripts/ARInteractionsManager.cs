@@ -10,7 +10,6 @@ public class ARInteractionsManager : MonoBehaviour
     [SerializeField] private Camera aRCamera;
     private ARRaycastManager aRRaycastManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
-
     private GameObject aRPointer;
     private GameObject item3DModel;
     private GameObject itemSelected;
@@ -20,17 +19,58 @@ public class ARInteractionsManager : MonoBehaviour
 
     private Vector2 initialTouchPos;
 
-    public GameObject Item3DModel
+    public static ARInteractionsManager instance;
+
+    private string modelPath;
+
+    private void Awake()
     {
-        set
+        if (instance != null && instance != this)
         {
-            item3DModel = value;
-            item3DModel.transform.position = aRPointer.transform.position;
-            item3DModel.transform.parent = aRPointer.transform;
-            isInitialPosition = true;
+            Destroy(gameObject);
         }
-        get { return item3DModel; }
+        else
+        {
+            instance = this;
+        }
     }
+
+    public void SetModelPath(string path)
+    {
+        modelPath = path;
+    }
+
+    public void LoadModel()
+    {
+        if (!string.IsNullOrEmpty(modelPath))
+        {
+            StartCoroutine(ImportModel());
+        }
+    }
+
+    private IEnumerator ImportModel()
+    {
+        AssetBundleCreateRequest bundleRequest = AssetBundle.LoadFromFileAsync(modelPath);
+        yield return bundleRequest;
+
+        AssetBundle bundle = bundleRequest.assetBundle;
+        if (bundle != null)
+        {
+            string[] assetNames = bundle.GetAllAssetNames();
+            GameObject modelPrefab = bundle.LoadAsset<GameObject>(assetNames[0]);
+            if (modelPrefab != null)
+            {
+                item3DModel = Instantiate(modelPrefab, aRPointer.transform.position, Quaternion.identity);
+                item3DModel.transform.parent = aRPointer.transform;
+                isInitialPosition = true;
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to load AssetBundle.");
+        }
+    }
+
     void Start()
     {
         aRPointer = transform.GetChild(0).gameObject;
