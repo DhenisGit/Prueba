@@ -9,7 +9,6 @@ public class DataManager : MonoBehaviour
     [SerializeField] private string apiUrl = "https://back.igvperu.com/public/api/cliente/maquinas/get";
     [SerializeField] private GameObject buttonContainer; // Contenedor donde se agregarán los botones
     [SerializeField] private ItemButtonManager itemButtonPrefab; // Prefab del botón
-    [SerializeField] private Transform modelSpawnPoint; // Punto de aparición de modelos
 
     public void LoadItemsFromAPI()
     {
@@ -77,13 +76,6 @@ public class DataManager : MonoBehaviour
 
             // Descargar y asignar la imagen
             StartCoroutine(DownloadImage(item.maquina.url_imagen, itemButton));
-
-            // Descargar y mostrar el modelo 3D
-            StartCoroutine(DownloadModel(item.maquina.url_objeto, itemButton));
-
-            itemButton.name = item.maquina.nombre;
-
-            Debug.Log($"Button created for item: {item.maquina.nombre}");
         }
     }
 
@@ -105,41 +97,6 @@ public class DataManager : MonoBehaviour
             }
         }
     }
-
-    private IEnumerator DownloadModel(string url, ItemButtonManager itemButton)
-    {
-        using (UnityWebRequest www = UnityWebRequest.Get(url))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("Failed to download model: " + www.error);
-            }
-            else
-            {
-                byte[] modelData = www.downloadHandler.data;
-                string filePath = System.IO.Path.Combine(Application.persistentDataPath, "model.fbx");
-                System.IO.File.WriteAllBytes(filePath, modelData);
-
-                Debug.Log($"Model downloaded to: {filePath}");
-
-                // Pasar la ruta del archivo al gestor de interacciones AR
-                ARInteractionsManager.instance.SetModelPath(filePath);
-            }
-        }
-    }
-
-    private void ImportModel(string filePath)
-    {
-        GameObject model = new GameObject("ImportedModel");
-        model.transform.position = modelSpawnPoint.position;
-
-        // Aquí se requiere un proceso adicional de importación específico de Unity Editor para los archivos .fbx
-        // Este proceso no se puede realizar en tiempo de ejecución en Unity sin un Asset Bundle o Addressable
-
-        // Para una solución completa, deberías considerar usar Asset Bundles o Addressables para manejar modelos 3D en tiempo de ejecución
-    }
 }
 
 [System.Serializable]
@@ -153,9 +110,6 @@ public class ApiResponse
 public class DataItem
 {
     public int id;
-    public int maquina_id;
-    public int user_id;
-    public string estado_registro;
     public Maquina maquina;
 }
 
@@ -164,6 +118,7 @@ public class Maquina
 {
     public int id;
     public string nombre;
+    public int categoria_maquina_id;
     public string url_objeto;
     public string url_imagen;
 }

@@ -9,26 +9,46 @@ public class LoginController : MonoBehaviour
     public InputField loginEmail, loginPassword, passwordField;
     public Text errorMessage;
     public Button buttonHidePass, buttonShowPass;
+    public GameObject aRCamera; // Referencia al GameObject de la cámara AR
 
     public static string authToken; // Variable estática para almacenar el token
 
     void Start()
     {
-        OpenLoginPanel();
+        Debug.Log("Inicio de la aplicación.");
+
+        // Revisar si ya hay una sesión iniciada
+        bool isLoggedIn = PlayerPrefs.GetInt("isLoggedIn", 0) == 1;
+        authToken = PlayerPrefs.GetString("authToken", null);
+        Debug.Log("Estado de sesión iniciada: " + isLoggedIn);
+        Debug.Log("Token recuperado: " + authToken);
+
+        if (isLoggedIn && !string.IsNullOrEmpty(authToken))
+        {
+            OpenHomePanel();
+        }
+        else
+        {
+            OpenLoginPanel();
+        }
     }
 
     public void OpenLoginPanel()
     {
+        Debug.Log("Abriendo panel de login.");
         loginPanel.SetActive(true);
         homePanel.SetActive(false);
         errorPanel.SetActive(false);
+        aRCamera.SetActive(false); // Desactivar la cámara AR
     }
 
     public void OpenHomePanel()
     {
+        Debug.Log("Abriendo panel de inicio.");
         loginPanel.SetActive(false);
         homePanel.SetActive(true);
         errorPanel.SetActive(false);
+        aRCamera.SetActive(true); // Activar la cámara AR
     }
 
     public void LoginUser()
@@ -49,32 +69,36 @@ public class LoginController : MonoBehaviour
     private IEnumerator LoginCoroutine()
     {
         WWWForm form = new WWWForm();
-        form.AddField("codigo", loginEmail.text);
+        form.AddField("username", loginEmail.text);
         form.AddField("password", loginPassword.text);
 
         using (UnityWebRequest www = UnityWebRequest.Post("https://back.igvperu.com/public/api/login/1", form))
         {
             yield return www.SendWebRequest();
 
-            Debug.Log("Code Response: " + www.responseCode);
+            Debug.Log("Respuesta de login recibida con código: " + www.responseCode);
+
             if (www.responseCode == 200)
             {
                 AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
                 if (!string.IsNullOrEmpty(response.error))
                 {
-                    Debug.LogError("Server Error: " + response.error);
+                    Debug.LogError("Error del servidor: " + response.error);
                     ShowErrorMessage(response.error);
                 }
                 else
                 {
                     authToken = response.token; // Almacenar el token
-                    Debug.Log("Token: " + response.token);
+                    PlayerPrefs.SetString("authToken", authToken); // Guardar el token de manera persistente
+                    PlayerPrefs.SetInt("isLoggedIn", 1); // Guardar que la sesión está iniciada
+                    PlayerPrefs.Save(); // Asegurarse de que los datos se guarden
+                    Debug.Log("Token guardado: " + response.token);
                     OpenHomePanel();
                 }
             }
             else if (www.responseCode == 400)
             {
-                Debug.LogError("Bad Request: " + www.downloadHandler.text);
+                Debug.LogError("Solicitud incorrecta: " + www.downloadHandler.text);
                 ShowErrorMessage("Solicitud incorrecta. Por favor, revisa tus datos.");
             }
             else if (www.responseCode == 401)
@@ -87,7 +111,7 @@ public class LoginController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Unexpected Error (" + www.responseCode + "): " + www.downloadHandler.text);
+                Debug.LogError("Error inesperado (" + www.responseCode + "): " + www.downloadHandler.text);
                 ShowErrorMessage("Error inesperado. Código: " + www.responseCode);
             }
         }
@@ -124,8 +148,8 @@ public class LoginController : MonoBehaviour
 
     public void SetLoginCredentials()
     {
-        loginEmail.text = "EmVcaOSlxX";
-        loginPassword.text = "48836529";
+        loginEmail.text = "DA.G";
+        loginPassword.text = "TdfLQa";
     }
 }
 

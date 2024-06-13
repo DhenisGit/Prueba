@@ -46,11 +46,14 @@ public class GameManager : MonoBehaviour
 
     public void CloseApp()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
-        Debug.Log("CloseApp called.");
+        // Eliminar la bandera de sesión iniciada y el token de autenticación
+        PlayerPrefs.DeleteKey("isLoggedIn");
+        PlayerPrefs.DeleteKey("authToken");
+        PlayerPrefs.Save();
+
+        // Encontrar el LoginController y abrir el panel de login
+        FindObjectOfType<LoginController>().OpenLoginPanel();
+
+        Debug.Log("Sesión cerrada, token eliminado y redirigido al panel de login.");
     }
 }
