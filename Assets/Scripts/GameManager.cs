@@ -23,23 +23,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        MainMenu();
-
-    }
     public void MainMenu()
     {
         OnMainMenu?.Invoke();
         Debug.Log("Main Menu Activated");
     }
+
     public void ItemsMenu()
     {
         OnItemsMenu?.Invoke();
         Debug.Log("Items Menu Activated");
 
+        // Llamar a la API para cargar items
+        FindObjectOfType<DataManager>().LoadItemsFromAPI();
     }
 
     public void ARPosition()
@@ -50,9 +46,14 @@ public class GameManager : MonoBehaviour
 
     public void CloseApp()
     {
-        Application.Quit();
+        // Eliminar la bandera de sesión iniciada y el token de autenticación
+        PlayerPrefs.DeleteKey("isLoggedIn");
+        PlayerPrefs.DeleteKey("authToken");
+        PlayerPrefs.Save();
+
+        // Encontrar el LoginController y abrir el panel de login
+        FindObjectOfType<LoginController>().OpenLoginPanel();
+
+        Debug.Log("Sesión cerrada, token eliminado y redirigido al panel de login.");
     }
-
-
 }
-
