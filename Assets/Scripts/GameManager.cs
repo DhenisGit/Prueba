@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Items Menu Activated");
 
         // Llamar a la API para cargar items
-        FindObjectOfType<DataManager>().LoadItemsFromAPI();
+        //FindObjectOfType<DataManager>().LoadItemsFromAPI();
     }
 
     public void ARPosition()
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     public void CloseApp()
     {
-        // Eliminar la bandera de sesión iniciada y el token de autenticación
+        // Eliminar la bandera de sesion iniciada y el token de autenticacion
         PlayerPrefs.DeleteKey("isLoggedIn");
         PlayerPrefs.DeleteKey("authToken");
         PlayerPrefs.Save();
@@ -54,6 +54,6 @@ public class GameManager : MonoBehaviour
         // Encontrar el LoginController y abrir el panel de login
         FindObjectOfType<LoginController>().OpenLoginPanel();
 
-        Debug.Log("Sesión cerrada, token eliminado y redirigido al panel de login.");
+        Debug.Log("Sesion cerrada, token eliminado y redirigido al panel de login.");
     }
 }

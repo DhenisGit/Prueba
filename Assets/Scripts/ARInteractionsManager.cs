@@ -22,6 +22,16 @@ public class ARInteractionsManager : MonoBehaviour
     public static ARInteractionsManager instance;
 
     private string modelPath;
+    public GameObject Item3DModel
+    {
+        set
+        {
+            item3DModel = value;
+            item3DModel.transform.position = aRPointer.transform.position;
+            item3DModel.transform.parent = aRPointer.transform;
+            isInitialPosition = true;
+        }
+    }
 
     private void Awake()
     {
@@ -102,6 +112,7 @@ public class ARInteractionsManager : MonoBehaviour
                 isOverUI = isTapOverUI(touchPosition);
                 isOverUI3DModel = isTapOver3DModel(touchPosition);
             }
+
             if (touchOne.phase == TouchPhase.Moved)
             {
                 if (aRRaycastManager.Raycast(touchOne.position, hits, TrackableType.Planes))
@@ -113,6 +124,7 @@ public class ARInteractionsManager : MonoBehaviour
                     }
                 }
             }
+
             if (Input.touchCount == 2)
             {
                 Touch touchTwo = Input.GetTouch(1);
@@ -120,6 +132,7 @@ public class ARInteractionsManager : MonoBehaviour
                 {
                     initialTouchPos = touchTwo.position - touchOne.position;
                 }
+
                 if (touchOne.phase == TouchPhase.Moved || touchTwo.phase == TouchPhase.Moved)
                 {
                     Vector2 currentTouchPos = touchTwo.position - touchOne.position;

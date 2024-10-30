@@ -9,21 +9,22 @@ public class LoginController : MonoBehaviour
     public InputField loginEmail, loginPassword, passwordField;
     public Text errorMessage;
     public Button buttonHidePass, buttonShowPass;
-    public GameObject aRCamera; // Referencia al GameObject de la cámara AR
+    //public GameObject aRCamera; // Referencia al GameObject de la camara AR
 
-    public static string authToken; // Variable estática para almacenar el token
+    public static string authToken; // Variable estatica para almacenar el token
 
     void Start()
     {
-        Debug.Log("Inicio de la aplicación.");
+        Debug.Log("Inicio de la aplicacion.");
 
-        // Revisar si ya hay una sesión iniciada
+        // Revisar si ya hay una sesion iniciada
         bool isLoggedIn = PlayerPrefs.GetInt("isLoggedIn", 0) == 1;
-        authToken = PlayerPrefs.GetString("authToken", null);
-        Debug.Log("Estado de sesión iniciada: " + isLoggedIn);
-        Debug.Log("Token recuperado: " + authToken);
+        //authToken = PlayerPrefs.GetString("authToken", null);
+        Debug.Log("Estado de sesion iniciada: " + isLoggedIn);
+        //Debug.Log("Token recuperado: " + authToken);
 
-        if (isLoggedIn && !string.IsNullOrEmpty(authToken))
+        //if (isLoggedIn && !string.IsNullOrEmpty(authToken))
+        if (isLoggedIn)
         {
             OpenHomePanel();
         }
@@ -39,7 +40,7 @@ public class LoginController : MonoBehaviour
         loginPanel.SetActive(true);
         homePanel.SetActive(false);
         errorPanel.SetActive(false);
-        aRCamera.SetActive(false); // Desactivar la cámara AR
+        //aRCamera.SetActive(false); // Desactivar la camara AR
     }
 
     public void OpenHomePanel()
@@ -48,7 +49,7 @@ public class LoginController : MonoBehaviour
         loginPanel.SetActive(false);
         homePanel.SetActive(true);
         errorPanel.SetActive(false);
-        aRCamera.SetActive(true); // Activar la cámara AR
+        //aRCamera.SetActive(true); // Activar la camara AR
     }
 
     public void LoginUser()
@@ -60,7 +61,7 @@ public class LoginController : MonoBehaviour
         }
         if (string.IsNullOrEmpty(loginPassword.text))
         {
-            ShowErrorMessage("Por favor, completa el campo de contraseña");
+            ShowErrorMessage("Por favor, completa el campo de contraseÃ±a");
             return;
         }
         StartCoroutine(LoginCoroutine());
@@ -76,7 +77,7 @@ public class LoginController : MonoBehaviour
         {
             yield return www.SendWebRequest();
 
-            Debug.Log("Respuesta de login recibida con código: " + www.responseCode);
+            Debug.Log("Respuesta de login recibida con codigo: " + www.responseCode);
 
             if (www.responseCode == 200)
             {
@@ -89,8 +90,8 @@ public class LoginController : MonoBehaviour
                 else
                 {
                     authToken = response.token; // Almacenar el token
-                    PlayerPrefs.SetString("authToken", authToken); // Guardar el token de manera persistente
-                    PlayerPrefs.SetInt("isLoggedIn", 1); // Guardar que la sesión está iniciada
+                    //PlayerPrefs.SetString("authToken", authToken); // Guardar el token de manera persistente
+                    //PlayerPrefs.SetInt("isLoggedIn", 1); // Guardar que la sesion esta iniciada
                     PlayerPrefs.Save(); // Asegurarse de que los datos se guarden
                     Debug.Log("Token guardado: " + response.token);
                     OpenHomePanel();
@@ -107,12 +108,12 @@ public class LoginController : MonoBehaviour
             }
             else if (www.responseCode == 404)
             {
-                ShowErrorMessage("No se encontró un usuario con el código ingresado");
+                ShowErrorMessage("No se encontro un usuario con el codigo ingresado");
             }
             else
             {
                 Debug.LogError("Error inesperado (" + www.responseCode + "): " + www.downloadHandler.text);
-                ShowErrorMessage("Error inesperado. Código: " + www.responseCode);
+                ShowErrorMessage("Error inesperado. Codigo: " + www.responseCode);
             }
         }
     }
@@ -144,12 +145,6 @@ public class LoginController : MonoBehaviour
         errorPanel.SetActive(true);
         yield return new WaitForSeconds(delay); // Espera 3 segundos
         errorPanel.SetActive(false); // Oculta el panel de error
-    }
-
-    public void SetLoginCredentials()
-    {
-        loginEmail.text = "DA.G";
-        loginPassword.text = "TdfLQa";
     }
 }
 

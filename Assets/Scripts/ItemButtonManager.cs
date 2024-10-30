@@ -1,38 +1,75 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemButtonManager : MonoBehaviour
 {
-    [SerializeField] private Text itemNameText;
-    [SerializeField] private Image itemImage;
+    private string itemName;
+    private Sprite itemImage;
+    private GameObject item3DModel;
+    private ARInteractionsManager interactionsManager;
 
     public string ItemName
     {
         set
         {
-            if (itemNameText != null)
-            {
-                itemNameText.text = value;
-            }
-            else
-            {
-                Debug.LogError("itemNameText is not assigned.");
-            }
+            itemName = value;
         }
     }
 
-    public Sprite ItemImage
+    public Sprite ItemImage { set => itemImage = value; }
+
+    public GameObject Item3DModel { set => item3DModel = value; }
+
+    // Start is called before the first frame update
+    /*void Start()
     {
-        set
+        transform.GetChild(0).GetComponent<Text>().text = itemName;
+        transform.GetChild(1).GetComponent<RawImage>().texture = itemImage.texture;
+
+        var button = GetComponent<Button>();
+        button.onClick.AddListener(GameManager.instance.ARPosition);
+        button.onClick.AddListener(Create3DModel);
+    }*/
+    void Start()
+    {
+        var textComponent = transform.GetChild(0).GetComponent<Text>();
+        if (textComponent != null)
         {
-            if (itemImage != null)
-            {
-                itemImage.sprite = value;
-            }
-            else
-            {
-                Debug.LogError("itemImage is not assigned.");
-            }
+            textComponent.text = itemName;
         }
+        else
+        {
+            Debug.LogError("Text component not found in GetChild(0).");
+        }
+
+        var rawImageComponent = transform.GetChild(1).GetComponent<RawImage>();
+        if (rawImageComponent != null && itemImage != null)
+        {
+            rawImageComponent.texture = itemImage.texture;
+        }
+        else
+        {
+            Debug.LogError("RawImage or itemImage not assigned.");
+        }
+
+        var button = GetComponent<Button>();
+        if (button != null)
+        {
+            button.onClick.AddListener(GameManager.instance.ARPosition);
+            button.onClick.AddListener(Create3DModel);
+        }
+        else
+        {
+            Debug.LogError("Button component not found.");
+        }
+        interactionsManager = FindObjectOfType<ARInteractionsManager>();
     }
+
+    private void Create3DModel()
+    {
+        interactionsManager.Item3DModel = Instantiate(item3DModel);
+    }
+
 }
