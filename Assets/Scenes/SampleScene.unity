@@ -4090,6 +4090,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ff9efd96c797c449908e771a55e57bd, type: 2}
   - {fileID: 11400000, guid: f14c9a7a9f51d4b4cac91d6268855d78, type: 2}
   - {fileID: 11400000, guid: b65e37a767ab8f744b93c5d7846dc719, type: 2}
+  - {fileID: 11400000, guid: 5a98d8db7718c6e42b7d22bca4efa6c5, type: 2}
   buttonContainer: {fileID: 233768444}
   itemButtonManager: {fileID: 5786535442471526423, guid: 06d958940650d7d4fb635e7a4cfc9abb, type: 3}
 --- !u!1 &1924560329
@@ -4585,3 +4586,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &4433264137797899482
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934573473412706309, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8019855906205821465, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+      propertyPath: m_Name
+      value: Mezclador de carnicos
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}

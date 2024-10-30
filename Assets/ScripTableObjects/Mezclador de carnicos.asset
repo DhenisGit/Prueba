@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23b3bb2113c6bb4e91e5152e645c02d, type: 3}
+  m_Name: Mezclador de carnicos
+  m_EditorClassIdentifier: 
+  ItemName: Mezclador de carnicos
+  ItemImage: {fileID: 21300000, guid: 74eebbe4aab1ae146888c827fe025927, type: 3}
+  Item3DModel: {fileID: 8019855906205821465, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
