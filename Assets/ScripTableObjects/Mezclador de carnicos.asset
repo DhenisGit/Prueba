@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemName: Mezclador de carnicos
   ItemImage: {fileID: 21300000, guid: 74eebbe4aab1ae146888c827fe025927, type: 3}
-  Item3DModel: {fileID: 8019855906205821465, guid: 3ac3fda4d6588ef45ae530ab7d18a1be, type: 3}
+  Item3DModel: {fileID: 1459632136022241390, guid: 95999a8b982d9294b99981dd2f9cdb1a, type: 3}
